@@ -10,7 +10,6 @@ describe "data:download" do
     FileUtils.rm(filename) if File.exists?(filename)
     subject.invoke
     File.exists?(filename).should be_true
-    pending
   end
 
   it "should raise an error if the file doesn't exist" do
@@ -19,23 +18,50 @@ describe "data:download" do
       subject.invoke
     }.should raise_error
   end
-
 end
 
 describe "data:import" do
-  include_context "rake"
+  include_context 'rake'
   let(:example_file) { File.join(Rails.root, "tmp/data.csv") }
   let(:download_file) { File.join(Rails.root, "spec/fixtures/data_example_earthquakes.csv") }
+  let(:earthquake) { Earthquake.new(
+      :src => 'us',
+      :eqid => 'b000gym1',
+      :version => '7',
+      :datetime => "Saturday, May 18, 2013 22:39:46 UTC",
+      :lat => 52.6720,
+      :lon => 158.9419,
+      :magnitude => 4.9,
+      :depth => 73.80,
+      :nst => 134,
+      :region => "near the east coast of the Kamchatka Peninsula, Russia"
+  )}
 
   its(:prerequisites) { should include("environment") }
 
   it "should import the data" do
     FileUtils.cp(example_file, download_file)
-    num_lines = File.readlines(example_file).length
-    puts "supposed to read #{num_lines} lines"
+    num_records = File.readlines(example_file).length - 1
     subject.invoke
+    Earthquake.count.should == num_records
+  end
 
-    pending
+  it "should store the raw record" do
+    FileUtils.cp(example_file, download_file)
+    last_row = File.readlines(example_file).last.chomp
+    subject.invoke
+    Earthquake.last.raw.should == last_row
+  end
+
+  it "should not import duplicate records" do
+    FileUtils.cp(example_file, download_file)
+    num_records = File.readlines(example_file).length - 1
+    subject.invoke
+    Earthquake.count.should == num_records
+    new_hash = Earthquake.first.attributes.dup
+    [:id, :created_at, :updated_at].each {|k| new_hash.delete(k.to_s)}
+    lambda { Earthquake.create!(new_hash) }.should raise_error
+    Earthquake.count.should == num_records
   end
 
   it "should raise an error if the file doesn't exist" do
