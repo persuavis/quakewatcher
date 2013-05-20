@@ -3,7 +3,7 @@ require File.expand_path("../../../support/shared_contexts/rake", __FILE__)
 
 describe "data:download" do
   include_context "rake"
-  let(:download_file) { "tmp/data.csv"}
+  let(:download_file) { "data/data.csv"}
 
   it "should download the data" do
     filename = File.join(Rails.root, download_file)
@@ -22,20 +22,8 @@ end
 
 describe "data:import" do
   include_context 'rake'
-  let(:example_file) { File.join(Rails.root, "tmp/data.csv") }
-  let(:download_file) { File.join(Rails.root, "spec/fixtures/data_example_earthquakes.csv") }
-  let(:earthquake) { Earthquake.new(
-      :src => 'us',
-      :eqid => 'b000gym1',
-      :version => '7',
-      :datetime => "Saturday, May 18, 2013 22:39:46 UTC",
-      :lat => 52.6720,
-      :lon => 158.9419,
-      :magnitude => 4.9,
-      :depth => 73.80,
-      :nst => 134,
-      :region => "near the east coast of the Kamchatka Peninsula, Russia"
-  )}
+  let(:example_file) { File.join(Rails.root, "spec/fixtures/data_example_earthquakes.csv") }
+  let(:download_file) { File.join(Rails.root, "data/data.csv") }
 
   its(:prerequisites) { should include("environment") }
 

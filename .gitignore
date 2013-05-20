@@ -17,4 +17,8 @@ pickle-email-*.html
 .idea
 .rvmrc
 set_env
+update_heroku.sh
 scratch.rb
+/data/*.txt
+/data/*.csv
+

@@ -1,6 +1,6 @@
 # data.rake
 
-$tmp_file = 'tmp/data.csv'
+$data_file = 'data/data.csv'
 
 namespace :data do
   desc "Download earthquake data"
@@ -8,25 +8,25 @@ namespace :data do
     require 'open-uri'
     url = 'http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M1.txt'
     puts "#{task_name}: now downloading earthquake data from #{url}"
-    open($tmp_file, 'w') do |file|
+    open($data_file, 'w') do |file|
       file << open(url).read
     end
-    #open($tmp_file, 'w') do |file| # for testing
+    #open($data_file, 'w') do |file| # for testing
     #  file << open('spec/fixtures/data_example_earthquakes.csv').read
     #end
-    raise "ERROR" if !File.exists?($tmp_file)
-    puts "data is stored in #{$tmp_file}"
+    raise "ERROR" if !File.exists?($data_file)
+    puts "data is stored in #{$data_file}"
   end
 
   desc "Import earthquake data"
   task :import => :environment do |task_name|
     require 'csv'
-    puts "===>>> #{task_name}: now importing earthquake data from #{$tmp_file}"
-    raise "ERROR" if !File.exists?($tmp_file)
+    puts "===>>> #{task_name}: now importing earthquake data from #{$data_file}"
+    raise "ERROR" if !File.exists?($data_file)
     count = 0
     puts "\n==>> starting with #{Earthquake.count} total records"
     headers = nil
-    File.readlines($tmp_file).each do |line|
+    File.readlines($data_file).each do |line|
       CSV.parse(line, :headers => headers) do |row|
         if headers.nil?
           headers = row
