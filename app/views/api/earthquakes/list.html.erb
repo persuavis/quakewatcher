@@ -1,0 +1,8 @@
+<h1>Recent Earthquakes</h1>
+<p>raw data records</p>
+
+<ul>
+  <% @earthquakes.each do |eq| %>
+    <li><%= eq.raw %></li>
+  <% end %>
+</ul>

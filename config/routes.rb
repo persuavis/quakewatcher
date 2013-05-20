@@ -1,4 +1,10 @@
 Qks1::Application.routes.draw do
+  namespace :api do
+    get "earthquakes/list"
+  end
+
+  match 'earthquakes(.:format)' => 'api/earthquakes#list'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
