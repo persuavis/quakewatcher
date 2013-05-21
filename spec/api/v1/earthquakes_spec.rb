@@ -7,15 +7,20 @@ describe "/api/v1/earthquakes", :type => :api do
 
   context "viewable earthquakes" do
 
+    it "supports HTML format" do
+      FactoryGirl.create(:earthquake, :src => 'test', :datetime => Time.at(datetime_value))
+      get "#{url}"
+      response.status.should eql(200)
+      earthquakes = Nokogiri::HTML(response.body)
+      earthquakes.css("ul li div ul li").first.text.should eql("test")
+    end
+
     it "supports JSON format" do
       FactoryGirl.create(:earthquake, :src => 'test', :datetime => Time.at(datetime_value))
       earthquakes_json = Earthquake.all.to_json
-
       get "#{url}.json"
-
       response.body.should eql(earthquakes_json)
       response.status.should eql(200)
-
       earthquakes = JSON.parse(response.body)
       earthquakes.any? do |p|
         p["src"] == 'test'

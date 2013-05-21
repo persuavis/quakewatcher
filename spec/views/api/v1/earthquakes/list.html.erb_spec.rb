@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "api/earthquakes/list.html.erb" do
+describe "api/v1/earthquakes/list.html.erb" do
 
   it "renders _earthquake partial for each earthquake" do
     assign(:earthquakes, [stub_model(Earthquake), stub_model(Earthquake)])
