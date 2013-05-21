@@ -57,7 +57,24 @@ describe Earthquake do
       FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
       search_options = {since: since}
       Earthquake.search(search_options).length.should == 2
+    end
 
+    it "should accept the search parameter :over" do
+      over = 3.2
+      FactoryGirl.create(:earthquake, :magnitude => 1)
+      FactoryGirl.create(:earthquake, :magnitude => 2.3)
+      FactoryGirl.create(:earthquake, :magnitude => 6.1)
+      search_options = {over: over}
+      Earthquake.search(search_options).length.should == 1
+    end
+
+    it "should accept the search parameter :near" do
+      lat, lon = 91, 22
+      FactoryGirl.create(:earthquake, :lat => 91.01, :lon => 21.99)
+      FactoryGirl.create(:earthquake, :lat => 89, :lon => 50)
+      FactoryGirl.create(:earthquake, :lat => -120, :lon => -56)
+      search_options = {near: "#{lat},#{lon}"}
+      Earthquake.search(search_options).length.should == 1
     end
   end
 end

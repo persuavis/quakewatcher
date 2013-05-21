@@ -1,4 +1,11 @@
 class Earthquake < ActiveRecord::Base
+
+  acts_as_mappable :default_units => :miles,
+                   :default_formula => :sphere,
+                   #:distance_field_name => :distance,
+                   :lat_column_name => :lat,
+                   :lng_column_name => :lon
+
   attr_accessible :datetime, :depth, :eqid, :lat, :lon, :magnitude, :nst, :raw, :region, :src, :version
 
   validates_uniqueness_of :eqid
@@ -15,6 +22,17 @@ class Earthquake < ActiveRecord::Base
     where(["datetime >= ?", datetime])
   end
 
+  def self.over(magnitude)
+    where(["magnitude > ?", magnitude])
+  end
+
+  def self.near(lat_and_lon)
+    lat,lon = lat_and_lon.split(',')
+    origin = Earthquake.new(:lat => lat, :lon => lon)
+    ids = Earthquake.all.select{|q| origin.distance_from(q) < 5.0 }.collect{|q| q.id}
+    where(["id IN (?)", ids])
+  end
+
   # any scopes should go here:
   # ...
 
@@ -23,6 +41,9 @@ class Earthquake < ActiveRecord::Base
     result = Earthquake.where(true)
     result = result.on(options[:on]) if options[:on]
     result = result.since(options[:since]) if options[:since]
+    result = result.over(options[:over]) if options[:over]
+    result = result.near(options[:near]) if options[:near]
+    #puts result.to_sql
     result
   end
 
