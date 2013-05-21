@@ -6,7 +6,7 @@
 # no regular words or you'll be exposed to dictionary attacks.
 
 secret_token = ENV['QKS1_SECRET_TOKEN']
-if secret_token.length < 128
+if secret_token.nil? || secret_token.length < 128
   raise "Secret token cannot be loaded"
 else
   Qks1::Application.config.secret_token = secret_token

@@ -1,7 +1,7 @@
-class Api::EarthquakesController < ApplicationController
+class Api::V1::EarthquakesController < ApplicationController
   def list
     puts params
-    @earthquakes = Earthquake.all
+    @earthquakes = Earthquake.search(params)
     respond_to do |format|
       format.html
       format.xml { render :xml => @earthquakes.to_xml }

@@ -3,6 +3,8 @@
 
 <ul>
   <% @earthquakes.each do |eq| %>
-    <li><%= eq.raw %></li>
+    <li>
+      <%= render :partial => 'partials/earthquake', :locals => {:earthquake => eq } %>
+    </li>
   <% end %>
 </ul>

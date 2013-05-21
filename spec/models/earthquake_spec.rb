@@ -30,4 +30,34 @@ describe Earthquake do
     eq1.save!
     eq1.reload.datetime.should == dt
   end
+
+  describe "search" do
+    it "should accept search parameters" do
+      search_options = {on: 1364582194}
+      lambda {
+        Earthquake.search(search_options)
+      }.should_not raise_exception
+    end
+
+    it "should accept the search parameter :on" do
+      on = 1364582194
+      dt = Time.at(on)
+      FactoryGirl.create(:earthquake, :datetime => dt)
+      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      search_options = {on: on}
+      Earthquake.search(search_options).length.should == 1
+    end
+
+    it "should accept the search parameter :since" do
+      since = 1364582194
+      dt = Time.at(since)
+      FactoryGirl.create(:earthquake, :datetime => dt)
+      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      search_options = {since: since}
+      Earthquake.search(search_options).length.should == 2
+
+    end
+  end
 end
