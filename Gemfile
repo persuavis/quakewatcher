@@ -45,4 +45,6 @@ group :development, :test do
   gem 'cucumber-rails', :require => false
   gem 'factory_girl_rails', :require => false
   gem 'database_cleaner'
+  gem 'guard'
+  gem 'guard-rspec'
 end
