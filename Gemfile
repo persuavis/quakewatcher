@@ -41,6 +41,7 @@ gem 'jquery-rails'
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.0'
+  gem 'webrat', '>= 0.7.2'
   gem 'cucumber-rails', :require => false
   gem 'factory_girl_rails', :require => false
   gem 'database_cleaner'

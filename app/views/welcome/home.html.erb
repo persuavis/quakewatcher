@@ -1,0 +1,29 @@
+<h1>QuakeWatcher - Keep Track of Recent Earthquakes</h1>
+<p>based on <a href="https://explore.data.gov/Geography-and-Environment/Worldwide-M1-Earthquakes-Past-7-Days/7tag-iwnu">https://explore.data.gov/Geography-and-Environment/Worldwide-M1-Earthquakes-Past-7-Days/7tag-iwnu</a></p>
+
+<h2>Metadata</h2>
+<p>There are <%= @earthquake_count %> earthquakes in the database</p>
+<p>The newest earthquake in the database is:
+  <%= render :partial => 'partials/earthquake_details', :locals => {:earthquake => @newest_earthquake } %>
+</p>
+<p>The oldest earthquake in the database is:
+  <%= render :partial => 'partials/earthquake_details', :locals => {:earthquake => @oldest_earthquake } %>
+</p>
+
+<h2>API (Version 1)</h2>
+<p>This app provides an api to search for recent earthquake data</p>
+<ul>
+  <li>/api/v1/earthquakes</li>
+  <li>/api/v1/earthquakes.json</li>
+  <li>/api/v1/earthquakes.xml</li>
+  <li>/api/v1/earthquakes.json?on=1364582194</li>
+  <li>/api/v1/earthquakes.json?since=1364582194</li>
+  <li>/api/v1/earthquakes.json?over=6.4</li>
+  <li>/api/v1/earthquakes.json?near=36.6702,-114.8870</li>
+</ul>
+
+<h2>API Shortcut</h2>
+<p>
+  You can use /earthquakes as a shortcut to the api urls.
+  For example /earthquakes.json is the same as /api/v1/earthquakes.json
+</p>

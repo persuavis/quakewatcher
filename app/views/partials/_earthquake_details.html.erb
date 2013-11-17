@@ -1,0 +1,11 @@
+<% if earthquake.nil? %>
+    <div><ul><li>missing earthquake data</li></ul></div>
+<% else %>
+    <div>
+      <ul>
+        <% earthquake.attributes.each do |a, v| %>
+          <li><%= a %>: <%= v %></li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>

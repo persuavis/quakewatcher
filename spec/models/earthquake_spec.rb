@@ -77,4 +77,25 @@ describe Earthquake do
       Earthquake.search(search_options).length.should == 1
     end
   end
+
+  describe "special cases" do
+    it "should retrieve the oldest earthquake from the database" do
+      on = 1364582194
+      dt = Time.at(on)
+      FactoryGirl.create(:earthquake, :datetime => dt)
+      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      Earthquake.oldest.datetime.to_s(:db).should == (dt - 1.day).utc.to_s(:db)
+    end
+
+    it "should retrieve the newest earthquake from the database" do
+      on = 1364582194
+      dt = Time.at(on)
+      FactoryGirl.create(:earthquake, :datetime => dt)
+      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      Earthquake.newest.datetime.to_s(:db).should == (dt + 1.day).utc.to_s(:db)
+    end
+
+  end
 end

@@ -58,4 +58,12 @@ class Earthquake < ActiveRecord::Base
     end
   end
 
+  def self.oldest
+    Earthquake.order('datetime ASC').first
+  end
+
+  def self.newest
+    Earthquake.order('datetime ASC').last
+  end
+
 end
