@@ -1,0 +1,40 @@
+<h1>QuakeWatcher - Search the Earthquakes Database</h1>
+
+<h2>Search</h2>
+<p>Enter your search criteria:</p>
+<%= form_tag("/welcome/search", method: "get") do %>
+    <ul>
+      <li>
+        <%= label_tag(:on, "Search for earthquakes on a specific date (mm/dd/yyyy):") %>
+        <%= text_field_tag(:on, params[:on]) %>
+      </li>
+      <li>
+        <%= label_tag(:since, "Search for earthquakes since a specific date (mm/dd/yyyy):") %>
+        <%= text_field_tag(:since, params[:since]) %>
+      </li>
+      <li>
+        <%= label_tag(:over, "Search for earthquakes over a specific magnitude:") %>
+        <%= text_field_tag(:over, params[:over]) %>
+      </li>
+      <li>
+        <%= label_tag(:near, "Search for earthquakes near a specific location (lat, lon, range):") %>
+        <%= text_field_tag(:near, params[:near]) %>
+      </li>
+      <li>
+        <%= label_tag(:limit, "Limit the number of records returned from the database") %>
+        <%= text_field_tag(:limit, params[:limit]) %>
+      </li>
+    </ul>
+    <%= submit_tag("Search") %>
+<% end %>
+
+<h2>Search Results</h2>
+<% if @earthquakes.nil? %>
+    <p>The query returned 0 earthquakes</p>
+<% else %>
+    <p>The query returned <%= @earthquakes.length %> earthquakes</p>
+    <ul>
+      <% @earthquakes.each do |earthquake| %>
+          <%= render :partial => 'partials/earthquake_details', :locals => {:earthquake => earthquake } %>
+      <% end %>
+    </ul><% end %>

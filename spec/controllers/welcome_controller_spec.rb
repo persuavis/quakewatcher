@@ -24,4 +24,20 @@ describe WelcomeController do
     end
 
   end
+
+  describe "GET search" do
+    it "gets an empty list of earthquakes if there are no params" do
+      get :search
+      assigns[:earthquakes].should == []
+    end
+
+    it "gets a list of earthquakes that match the search criteria specified in the params" do
+      earthquake = mock_model(Earthquake, :datetime => DateTime.new(2012,10,2))
+      earthquake_array = [earthquake]
+      Earthquake.stub(:search).and_return(earthquake_array)
+      earthquake_array.stub(:limit).and_return(earthquake_array)
+      get :search, :on => "10/2/12"
+      assigns[:earthquakes].should == [earthquake]
+    end
+  end
 end

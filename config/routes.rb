@@ -7,6 +7,7 @@ Qks1::Application.routes.draw do
 
   match 'earthquakes(.:format)' => 'api/v1/earthquakes#list'
   match 'welcome/home' => 'welcome#home'
+  match 'welcome/search' => 'welcome#search'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

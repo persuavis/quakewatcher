@@ -1,6 +1,5 @@
 class Api::V1::EarthquakesController < ApplicationController
   def list
-    puts params
     @earthquakes = Earthquake.search(params)
     respond_to do |format|
       format.html

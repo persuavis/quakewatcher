@@ -27,9 +27,11 @@ class Earthquake < ActiveRecord::Base
   end
 
   def self.near(lat_and_lon)
-    lat,lon = lat_and_lon.split(',')
+    lat,lon,range = lat_and_lon.split(',')
+    range ||= 5
+    range = range.to_f
     origin = Earthquake.new(:lat => lat, :lon => lon)
-    ids = Earthquake.all.select{|q| origin.distance_from(q) < 5.0 }.collect{|q| q.id}
+    ids = Earthquake.all.select{|q| origin.distance_from(q) < range }.collect{|q| q.id}
     where(["id IN (?)", ids])
   end
 
@@ -39,10 +41,10 @@ class Earthquake < ActiveRecord::Base
   def self.search(options)
     options ||= {}
     result = Earthquake.where(true)
-    result = result.on(options[:on]) if options[:on]
-    result = result.since(options[:since]) if options[:since]
-    result = result.over(options[:over]) if options[:over]
-    result = result.near(options[:near]) if options[:near]
+    result = result.on(options[:on]) unless options[:on].to_s == ''
+    result = result.since(options[:since]) unless options[:since].to_s == ''
+    result = result.over(options[:over]) unless options[:over].to_s == ''
+    result = result.near(options[:near]) unless options[:near].to_s == ''
     #puts result.to_sql
     result
   end
@@ -52,10 +54,27 @@ class Earthquake < ActiveRecord::Base
     when Fixnum
       Time.at(datetime_value)
     when String
-      Time.at(datetime_value.to_f)
+      self.convert_datetime_string(datetime_value)
+      when Float
+      Time.at(datetime_value)
     else
       datetime_value
     end
+  end
+
+  def self.convert_datetime_string(datetime_string)
+    if datetime_string =~ /^\d*$/
+      Time.at(datetime_string.to_f)
+    elsif datetime_string =~ /^(\d*)\/(\d*)\/(\d*)/
+      m = $1; d = $2; y = $3
+      Time.new(y, m, d)
+    elsif datetime_string =~ /^(\d*)-(\d*)-(\d*)/
+      y = $1; m = $2; d = $3
+      Time.new(y, m, d)
+    else
+      raise "invalid datetime string"
+    end
+
   end
 
   def self.oldest

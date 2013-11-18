@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "welcome/home" do
+describe "welcome/home.html.erb" do
 
   it "renders the home page" do
     render

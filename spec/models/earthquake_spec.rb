@@ -39,24 +39,76 @@ describe Earthquake do
       }.should_not raise_exception
     end
 
-    it "should accept the search parameter :on" do
-      on = 1364582194
-      dt = Time.at(on)
-      FactoryGirl.create(:earthquake, :datetime => dt)
-      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
-      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
-      search_options = {on: on}
-      Earthquake.search(search_options).length.should == 1
+    context "on a specific date" do
+      before(:each) do
+        @on = 1364582194
+        dt = Time.at(@on)
+        FactoryGirl.create(:earthquake, :datetime => dt)
+        FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+        FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      end
+
+      it "should accept the search parameter :on as an integer" do
+        search_options = {on: @on}
+        Earthquake.search(search_options).length.should == 1
+      end
+
+      it "should accept the search parameter :on as a float" do
+        on_float = @on + 0.5
+        search_options = {on: on_float}
+        Earthquake.search(search_options).length.should == 1
+      end
+
+      it "should accept the search parameter :on as a date string" do
+        dt = Time.at(@on)
+        on_string = dt.to_s(:db)
+        search_options = {on: on_string}
+        Earthquake.search(search_options).length.should == 1
+      end
+
+      it "should accept the search parameter :on as a date string with slashes" do
+        dt = Time.at(@on)
+        on_string = "#{dt.month}/#{dt.day}/#{dt.year}"
+        search_options = {on: on_string}
+        Earthquake.search(search_options).length.should == 1
+      end
+
     end
 
-    it "should accept the search parameter :since" do
-      since = 1364582194
-      dt = Time.at(since)
-      FactoryGirl.create(:earthquake, :datetime => dt)
-      FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
-      FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
-      search_options = {since: since}
-      Earthquake.search(search_options).length.should == 2
+    context "since a specific date" do
+      before(:each) do
+        @since = 1364582194
+        dt = Time.at(@since)
+        FactoryGirl.create(:earthquake, :datetime => dt)
+        FactoryGirl.create(:earthquake, :datetime => dt + 1.day)
+        FactoryGirl.create(:earthquake, :datetime => dt - 1.day)
+      end
+
+      it "should accept the search parameter :since as an integer" do
+        search_options = {since: @since}
+        Earthquake.search(search_options).length.should == 2
+      end
+
+      it "should accept the search parameter :since as a float" do
+        on_float = @since + 0.00
+        search_options = {since: on_float}
+        Earthquake.search(search_options).length.should == 2
+      end
+
+      it "should accept the search parameter :since as a date string" do
+        dt = Time.at(@since)
+        on_string = dt.to_s(:db)
+        search_options = {since: on_string}
+        Earthquake.search(search_options).length.should == 2
+      end
+
+      it "should accept the search parameter :since as a date string with slashes" do
+        dt = Time.at(@since)
+        on_string = "#{dt.month}/#{dt.day}/#{dt.year}"
+        search_options = {since: on_string}
+        Earthquake.search(search_options).length.should == 2
+      end
+
     end
 
     it "should accept the search parameter :over" do
@@ -76,6 +128,20 @@ describe Earthquake do
       search_options = {near: "#{lat},#{lon}"}
       Earthquake.search(search_options).length.should == 1
     end
+
+    it "should accept the search parameter :near with a range" do
+      lat, lon = 91, 22
+      FactoryGirl.create(:earthquake, :lat => 91.01, :lon => 21.99)
+      FactoryGirl.create(:earthquake, :lat => 89, :lon => 23)
+      FactoryGirl.create(:earthquake, :lat => -120, :lon => -56)
+      search_options = {near: "#{lat},#{lon}"}
+      Earthquake.search(search_options).length.should == 1
+      search_options = {near: "#{lat},#{lon},5"}
+      Earthquake.search(search_options).length.should == 1
+      search_options = {near: "#{lat},#{lon},999"}
+      Earthquake.search(search_options).length.should == 2
+    end
+
   end
 
   describe "special cases" do
