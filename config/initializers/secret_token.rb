@@ -7,7 +7,7 @@
 
 secret_token = ENV['QKS1_SECRET_TOKEN']
 if secret_token.nil? || secret_token.length < 128
-  raise "Secret token cannot be loaded"
+  puts "WARNING: Secret token cannot be loaded"
 else
   Qks1::Application.config.secret_token = secret_token
 end
