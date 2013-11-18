@@ -27,6 +27,7 @@ namespace :data do
     puts "\n==>> starting with #{Earthquake.count} total records"
     headers = nil
     File.readlines($data_file).each do |line|
+      next if line =~ /deprecated/
       CSV.parse(line, :headers => headers) do |row|
         if headers.nil?
           headers = row
