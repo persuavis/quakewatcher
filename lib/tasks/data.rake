@@ -1,6 +1,6 @@
 # data.rake
 
-$data_file = 'data/data.csv'
+$data_file = 'tmp/data.csv'
 
 namespace :data do
   desc "Download earthquake data"
